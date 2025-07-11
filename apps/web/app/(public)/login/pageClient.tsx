@@ -54,7 +54,7 @@ export default function LoginPageClient() {
         className="bg-cover bg-left bg-no-repeat bg-gradient-to-br from-indigo-600 to-purple-700 text-white items-center justify-center flex flex-col flex-1"
         style={{ backgroundImage: "url('/images/bg.png')" }}
       >
-        <div className="w-full h-full flex flex-col p-5 bg-gradient-to-br from-white/50 to-black/50 items-center justify-center">
+        <div className="w-full h-full flex flex-col p-5 bg-gradient-to-br from-transparent to-black/70 items-center justify-center">
           <h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
             Bem-vindo de volta ao <br /> OTAKU STARS!
           </h1>
@@ -107,7 +107,7 @@ export default function LoginPageClient() {
                 )}
               />
 
-              <Button type="submit" className="w-full">
+              <Button type="submit" variant="outline" className="w-full cursor-pointer">
                 Entrar
               </Button>
             </form>
