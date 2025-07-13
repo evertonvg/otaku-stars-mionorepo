@@ -1,22 +1,27 @@
 import Fastify from 'fastify'
-import { prisma } from './lib/prisma'
+import cors from '@fastify/cors';
+import prisma from './lib/prisma'
 
-const app = Fastify()
+import registerRoute from '../routes/auth/register';
+import loginRoute from '../routes/auth/login';
 
-app.get('/', async () => {
-  return { hello: 'world' }
-})
+async function start() {
+	const fastify = Fastify({ logger: true });
 
-app.listen({ port: 3333 }, (err) => {
-  if (err) {
-    console.error(err)
-    process.exit(1)
-  }
+	await fastify.register(cors, {
+		origin: process.env.FRONTEND_URL,
+		credentials: true,
+	});
 
-  console.log('🚀 HTTP server running at http://localhost:3333')
-})
+	// suas rotas
+	fastify.register(registerRoute);
+	fastify.register(loginRoute);
 
+	await fastify.listen({ port: 3333 });
+	console.log('Servidor rodando');
+}
 
-app.get('/users', async () => {
-  return await prisma.user.findMany()
-})
+start().catch(err => {
+	console.error(err);
+	process.exit(1);
+});
