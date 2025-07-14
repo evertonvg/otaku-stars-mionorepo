@@ -22,11 +22,10 @@ import { Eye, EyeOff } from 'lucide-react';
 import { passwordStrength, generatePassword } from '@/lib/utils';
 import { toast } from 'sonner';
 
-import { registerUser } from '@/store/registerUse';
+import { registerUser } from '@/lib/api/registerUse';
 
 export default function RegisterPageClient() {
 	const [passwordVisible, setPasswordVisible] = useState(false);
-	const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
 	const form = useForm<RegisterFormInputs>({
 		resolver: zodResolver(registerSchema),
@@ -64,7 +63,7 @@ export default function RegisterPageClient() {
 			{/* Lado esquerdo com imagem/frase */}
 			<div
 				className="bg-cover bg-left bg-no-repeat bg-gradient-to-br from-indigo-600 to-purple-700 text-white items-center justify-center flex flex-col flex-1"
-				style={{ backgroundImage: "url('/images/bg.png')" }}
+				style={{ backgroundImage: "url('/images/bg2.jpg')" }}
 			>
 				<div className="w-full h-full flex flex-col p-5 bg-gradient-to-br from-transparent to-black/70 items-center justify-center">
 					<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
@@ -77,6 +76,7 @@ export default function RegisterPageClient() {
 			</div>
 
 			{/* Lado direito com formulário */}
+
 			<div className="flex flex-1 items-center justify-center p-8 max-w-2xl">
 				<div className="w-full max-w-md">
 					<Form {...form}>
@@ -212,6 +212,7 @@ export default function RegisterPageClient() {
 						<Link href="/login">
 							<Button variant="link">Já tem conta? Faça login</Button>
 						</Link>
+
 					</div>
 				</div>
 			</div>

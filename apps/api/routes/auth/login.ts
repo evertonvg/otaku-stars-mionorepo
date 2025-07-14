@@ -1,45 +1,81 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import prisma from '../../src/lib/prisma';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import prisma from '../../src/lib/prisma';
+import { loginSchema } from '../../src/schemas/login.Schema';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+type LoginRequestBody = {
+	identifier: string;
+	password: string;
+};
+
+type LoginResponseUser = {
+	id: number;
+	username: string;
+	email: string;
+	roleId: number;
+};
+
+type LoginResponseSuccess = {
+	message: string;
+	token: string;
+	user: LoginResponseUser;
+};
 
 export default async function loginRoute(fastify: FastifyInstance) {
-	fastify.post('/login', async (request, reply) => {
-		const { emailOrUsername, password } = request.body as {
-			emailOrUsername: string;
-			password: string;
-		};
+	async function loginHandler(request: FastifyRequest<{ Body: LoginRequestBody }>, reply: FastifyReply) {
+		try {
+			const parsed = loginSchema.safeParse(request.body);
 
-		const user = await prisma.user.findFirst({
-			where: {
-				OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
-			},
-		});
+			if (!parsed.success) {
+				return reply.status(400).send({ errors: parsed.error.format() });
+			}
 
-		if (!user) {
-			return reply.status(401).send({ message: 'Credenciais inválidas' });
+			const { identifier, password } = parsed.data;
+
+			const user = await prisma.user.findFirst({
+				where: {
+					OR: [{ email: identifier }, { username: identifier }],
+				},
+			});
+
+			if (!user) {
+				return reply.status(401).send({ message: 'Usuário ou senha inválidos.' });
+			}
+
+			if (!user.isVerified) {
+				return reply.status(403).send({ message: 'Conta não verificada. Verifique seu e-mail.' });
+			}
+
+			const passwordMatch = await bcrypt.compare(password, user.password);
+
+			if (!passwordMatch) {
+				return reply.status(401).send({ message: 'Usuário ou senha inválidos.' });
+			}
+
+			const token = jwt.sign(
+				{ sub: user.id, email: user.email, roleId: user.roleId },
+				process.env.JWT_SECRET!,
+				{ expiresIn: '7d' }
+			);
+
+			const response: LoginResponseSuccess = {
+				message: 'Login realizado com sucesso.',
+				token,
+				user: {
+					id: user.id,
+					username: user.username,
+					email: user.email,
+					roleId: user.roleId,
+				},
+			};
+
+			return reply.status(200).send(response);
+		} catch (err) {
+			request.log.error(err);
+			return reply.status(500).send({ message: 'Erro interno no servidor.' });
 		}
+	}
 
-		const validPassword = await bcrypt.compare(password, user.password);
-
-		if (!validPassword) {
-			return reply.status(401).send({ message: 'Credenciais inválidas' });
-		}
-
-		const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-			expiresIn: '1d',
-		});
-
-		await prisma.user.update({
-			where: { id: user.id },
-			data: {
-				refreshToken: token,
-				tokenExpiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 dia
-			},
-		});
-
-		return reply.send({ token });
-	});
+	fastify.post('/login', loginHandler);
 }

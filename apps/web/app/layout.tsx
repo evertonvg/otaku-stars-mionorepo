@@ -1,13 +1,17 @@
+import './globals.css'; // Import global styles
+import { Providers } from './_provider/providers';
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>
-        {children}
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body>
+				<Providers>
+					{children}
+				</Providers>
+			</body>
+		</html>
+	);
 }
