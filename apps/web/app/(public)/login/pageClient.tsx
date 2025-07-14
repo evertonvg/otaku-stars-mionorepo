@@ -124,7 +124,7 @@ export default function LoginPageClient() {
 								)}
 							/>
 
-							<Button type="submit" disabled={isLoading} className="w-full">
+							<Button type="submit" disabled={isLoading} className="w-full cursor-pointer">
 								{isLoading ? 'Entrando...' : 'Entrar'}
 							</Button>
 						</form>
@@ -146,7 +146,10 @@ export default function LoginPageClient() {
 					{/* Link para cadastro */}
 					<div className="mt-6 text-center">
 						<Link href="/register">
-							<Button variant="link">Não tem conta? Cadastre-se</Button>
+							<Button variant="link" className="ml-4 cursor-pointer">Não tem conta? Cadastre-se</Button>
+						</Link>
+						<Link href="/forgot-password " >
+							<Button variant="link" className="ml-4 cursor-pointer">Recuperar senha</Button>
 						</Link>
 
 					</div>

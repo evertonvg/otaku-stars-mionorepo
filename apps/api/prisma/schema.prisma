@@ -5,46 +5,47 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
 
 model Role {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  users User[]
+    id    Int    @id @default(autoincrement())
+    name  String @unique
+    users User[]
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
-  username         String   @unique
-  email            String   @unique
-  password         String
-  photo            String?  // caminho da foto de perfil
-  coverPhoto       String?  // caminho da imagem de capa
-  coverPositionX   Float?   // posição horizontal da capa (ex: 0.5 = 50%)
-  coverPositionY   Float?   // posição vertical da capa
-  coverScale       Float?   // escala do zoom da capa
-  phone            String?  @db.VarChar(20)
-  isVerified       Boolean  @default(false)
+    id             Int     @id @default(autoincrement())
+    username       String  @unique
+    email          String  @unique
+    password       String
+    photo          String? // caminho da foto de perfil
+    coverPhoto     String? // caminho da imagem de capa
+    coverPositionX Float? // posição horizontal da capa (ex: 0.5 = 50%)
+    coverPositionY Float? // posição vertical da capa
+    coverScale     Float? // escala do zoom da capa
+    phone          String? @db.VarChar(20)
+    isVerified     Boolean @default(false)
 
-  roleId           Int
-  role             Role     @relation(fields: [roleId], references: [id])
+    passwordResetToken   String?   @unique
+    passwordResetExpires DateTime?
 
-  refreshToken     String?  @db.Text
-  tokenExpiresAt   DateTime?
+    roleId Int
+    role   Role @relation(fields: [roleId], references: [id])
 
-  googleId         String?  @unique
-  facebookId       String?  @unique
-  githubId         String?  @unique
-  twitterId        String?  @unique
+    refreshToken   String?   @db.Text
+    tokenExpiresAt DateTime?
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+    googleId   String? @unique
+    facebookId String? @unique
+    githubId   String? @unique
+    twitterId  String? @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
-
-
