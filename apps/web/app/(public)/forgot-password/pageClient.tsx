@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import AuthLayout from '../../_components/server/auth-layout';
 
 const forgotPasswordSchema = z.object({
 	email: z.string().email('Email inválido'),
@@ -41,25 +42,16 @@ export default function ForgotPasswordPageClient() {
 	const onSubmit = (data: ForgotPasswordForm) => mutation.mutate(data);
 
 	return (
-		<div className="min-h-screen flex flex-col md:flex-row">
-			{/* Lado esquerdo com imagem/frase */}
-			<div
-				className="bg-cover bg-left bg-no-repeat bg-gradient-to-br from-indigo-600 to-purple-700 text-white items-center justify-center flex flex-col flex-1"
-				style={{ backgroundImage: "url('/images/forgot.jpg')" }}
-			>
-				<div className="w-full h-full flex flex-col p-5 bg-gradient-to-br from-transparent to-black/70 items-center justify-center">
-					<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
-						Não lembra de sua senha?
-					</h1>
-					<p className="text-lg opacity-90 text-center text-shadow-accent">
-						Forneça seu e-mail e enviaremos um link para recuperação de senha.
-					</p>
-				</div>
-			</div>
-
-			{/* Lado direito com formulário */}
-			<div className="flex flex-1 items-center justify-center p-8 max-w-2xl">
-
+		<AuthLayout image="forgot.jpg">
+			<AuthLayout.BodyTitle>
+				<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
+					Não lembra de sua senha?
+				</h1>
+				<p className="text-lg opacity-90 text-center text-shadow-accent">
+					Forneça seu e-mail e enviaremos um link para recuperação de senha.
+				</p>
+			</AuthLayout.BodyTitle>
+			<AuthLayout.BodyContent>
 				<div className="w-full max-w-md space-y-6">
 					<h2 className="text-2xl font-semibold text-center">Recuperar Senha</h2>
 					<Form {...form}>
@@ -83,8 +75,8 @@ export default function ForgotPasswordPageClient() {
 						</form>
 					</Form>
 				</div>
+			</AuthLayout.BodyContent>
+		</AuthLayout>
 
-			</div>
-		</div>
 	);
 }

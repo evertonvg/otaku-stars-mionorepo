@@ -17,6 +17,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import AuthLayout from '../../_components/server/auth-layout';
 
 import { Eye, EyeOff } from 'lucide-react';
 import { passwordStrength, generatePassword } from '@/lib/utils';
@@ -59,25 +60,16 @@ export default function RegisterPageClient() {
 	};
 
 	return (
-		<div className="min-h-screen flex flex-col md:flex-row">
-			{/* Lado esquerdo com imagem/frase */}
-			<div
-				className="bg-cover bg-left bg-no-repeat bg-gradient-to-br from-indigo-600 to-purple-700 text-white items-center justify-center flex flex-col flex-1"
-				style={{ backgroundImage: "url('/images/bg2.jpg')" }}
-			>
-				<div className="w-full h-full flex flex-col p-5 bg-gradient-to-br from-transparent to-black/70 items-center justify-center">
-					<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
-						Crie sua conta <br /> no OTAKU STARS!
-					</h1>
-					<p className="text-lg opacity-90 text-center text-shadow-accent">
-						Participe da comunidade e aproveite todos os benefícios.
-					</p>
-				</div>
-			</div>
-
-			{/* Lado direito com formulário */}
-
-			<div className="flex flex-1 items-center justify-center p-8 max-w-2xl">
+		<AuthLayout image="bg2.jpg">
+			<AuthLayout.BodyTitle>
+				<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
+					Crie sua conta <br /> no OTAKU STARS!
+				</h1>
+				<p className="text-lg opacity-90 text-center text-shadow-accent">
+					Participe da comunidade e aproveite todos os benefícios.
+				</p>
+			</AuthLayout.BodyTitle>
+			<AuthLayout.BodyContent>
 				<div className="w-full max-w-md">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -215,7 +207,9 @@ export default function RegisterPageClient() {
 
 					</div>
 				</div>
-			</div>
-		</div>
+			</AuthLayout.BodyContent>
+		</AuthLayout>
+
+
 	);
 }

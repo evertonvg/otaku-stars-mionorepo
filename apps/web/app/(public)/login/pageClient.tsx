@@ -16,6 +16,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import AuthLayout from '../../_components/server/auth-layout';
 
 import { loginSchema, LoginFormInputs } from '@/schema/loginSchema';
 
@@ -63,24 +64,16 @@ export default function LoginPageClient() {
 	};
 
 	return (
-		<div className="min-h-screen flex flex-col md:flex-row">
-			{/* Lado esquerdo com imagem/frase */}
-			<div
-				className="bg-cover bg-left bg-no-repeat bg-gradient-to-br from-indigo-600 to-purple-700 text-white items-center justify-center flex flex-col flex-1"
-				style={{ backgroundImage: "url('/images/bg.png')" }}
-			>
-				<div className="w-full h-full flex flex-col p-5 bg-gradient-to-br from-transparent to-black/70 items-center justify-center">
-					<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
-						Bem-vindo de volta ao <br /> OTAKU STARS!
-					</h1>
-					<p className="text-lg opacity-90 text-center text-shadow-accent">
-						Faça login para acessar sua conta e continuar aproveitando nossos serviços.
-					</p>
-				</div>
-			</div>
-
-			{/* Lado direito com formulário */}
-			<div className="flex flex-1 items-center justify-center p-8 max-w-2xl">
+		<AuthLayout image="bg.png">
+			<AuthLayout.BodyTitle>
+				<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
+					Bem-vindo de volta ao <br /> OTAKU STARS!
+				</h1>
+				<p className="text-lg opacity-90 text-center text-shadow-accent">
+					Faça login para acessar sua conta e continuar aproveitando nossos serviços.
+				</p>
+			</AuthLayout.BodyTitle>
+			<AuthLayout.BodyContent>
 				<div className="w-full max-w-md">
 					<div className="rounded-full w-24 h-24 m-auto">
 						<Image
@@ -154,7 +147,8 @@ export default function LoginPageClient() {
 
 					</div>
 				</div>
-			</div>
-		</div>
+			</AuthLayout.BodyContent>
+		</AuthLayout>
+
 	);
 }
