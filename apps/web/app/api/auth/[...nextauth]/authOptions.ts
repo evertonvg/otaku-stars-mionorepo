@@ -1,5 +1,6 @@
 // app/api/auth/[...nextauth]/authOptions.ts
 import type { NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 export const authOptions: NextAuthOptions = {
@@ -11,7 +12,6 @@ export const authOptions: NextAuthOptions = {
 				password: { label: 'Senha', type: 'password' },
 			},
 			async authorize(credentials) {
-				// Validação inicial
 				if (!credentials?.identifier || !credentials.password) {
 					throw new Error('Credenciais inválidas.');
 				}
@@ -29,64 +29,94 @@ export const authOptions: NextAuthOptions = {
 					const result = await res.json();
 
 					if (!res.ok) {
-						// Mensagem personalizada para conta não verificada
 						if (result?.message?.toLowerCase().includes('verificada')) {
 							throw new Error('Conta não verificada. Verifique seu e-mail.');
 						}
 
-						// Outros erros genéricos (senha errada, usuário inexistente, etc.)
 						throw new Error(result?.message || 'Usuário ou senha inválidos.');
 					}
 
-					// Apenas dados seguros que serão incluídos no JWT
-					const { id, username, email, roleId } = result.user ?? result;
+					const { id, username, email, role, isVerified } = result.user ?? result;
 
-					console.log('Usuário autenticado:', { id, username, email, roleId });
-					return { id, username, email, roleId };
+					return { id, username, email, role, isVerified: isVerified ?? true };
 
 				} catch (error) {
-					// Garante que qualquer exceção será repassada como mensagem legível
 					const message = error instanceof Error ? error.message : 'Erro ao fazer login.';
 					throw new Error(message);
 				}
 			},
 		}),
+		GoogleProvider({
+			clientId: process.env.GOOGLE_CLIENT_ID!,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+		})
 	],
 
-	// Sessão baseada em JWT (padrão para App Router)
 	session: {
 		strategy: 'jwt',
 	},
 
-	// Página customizada de login
 	pages: {
 		signIn: '/login',
 	},
 
-	// 🔒 Chave secreta obrigatória para JWT
 	secret: process.env.NEXTAUTH_SECRET,
 
-	// 🔁 Callbacks para persistir dados do usuário na sessão
 	callbacks: {
-		async jwt({ token, user }) {
-			// Se for a primeira vez (login), adiciona os dados do usuário no token
+		async jwt({ token, user, account, profile }) {
+			// ✅ Login com Google (via OAuth)
+			if (account?.provider === 'google' && profile?.email) {
+				try {
+					const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/google`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							email: profile.email,
+							name: profile.name,
+						}),
+					});
+
+					const data = await res.json();
+
+					if (!res.ok) {
+						throw new Error(data.message || 'Erro no login com Google.');
+					}
+
+					token.id = data.id;
+					token.username = data.username;
+					token.email = data.email;
+					token.role = data.role;
+					token.isVerified = data.isVerified;
+
+				} catch (error) {
+					console.error('Erro ao logar com Google:', error);
+					throw new Error('Erro ao autenticar com Google.');
+				}
+			}
+
+			// ✅ Login com credenciais
 			if (user) {
 				token.id = user.id;
 				token.username = user.username;
 				token.email = user.email;
-				token.roleId = user.roleId;
+				token.role = user.role;
+				token.isVerified = user.isVerified ?? true; // default: true para login com credenciais
 			}
+
 			return token;
-		},
+		}
+		,
 
 		async session({ session, token }) {
-			// Repassa os dados do token para a session
 			if (token) {
 				session.user = {
-					id: token.id as string | number,
+					id: token.id as number,
 					username: token.username as string,
 					email: token.email as string,
-					roleId: token.roleId as string,
+					role: token.role as {
+						id: number;
+						name: string;
+					},
 				};
 			}
 			return session;

@@ -12,7 +12,7 @@ export default function BackButton() {
 		router.back();
 	};
 
-	if (pathname === '/login') return null;
+	if (pathname === '/login' || pathname == '/reset-password') return null;
 
 	return (
 		<Button onClick={handleBack} className='absolute top-4 md:top-12 left-4 cursor-pointer'>

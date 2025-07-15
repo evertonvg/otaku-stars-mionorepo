@@ -1,3 +1,4 @@
+// src/routes/login.ts
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import prisma from '../../src/lib/prisma';
 import bcrypt from 'bcrypt';
@@ -14,28 +15,37 @@ type LoginResponseUser = {
 	username: string;
 	email: string;
 	roleId: number;
+	role: {
+		id: number
+		name: string
+	},
 };
 
 type LoginResponseSuccess = {
 	message: string;
 	token: string;
 	user: LoginResponseUser;
+	roleId: number;
+	role: {
+		id: number
+		name: string
+	},
 };
 
 export default async function loginRoute(fastify: FastifyInstance) {
-	async function loginHandler(request: FastifyRequest<{ Body: LoginRequestBody }>, reply: FastifyReply) {
-		try {
-			const parsed = loginSchema.safeParse(request.body);
+	fastify.post(
+		'/login',
+		async (request: FastifyRequest<{ Body: LoginRequestBody }>, reply: FastifyReply) => {
+			const parsed = loginSchema.parse(request.body);
+			const { identifier, password } = parsed;
 
-			if (!parsed.success) {
-				return reply.status(400).send({ errors: parsed.error.format() });
-			}
-
-			const { identifier, password } = parsed.data;
-
+			// 🔍 Busca por e-mail ou username
 			const user = await prisma.user.findFirst({
 				where: {
 					OR: [{ email: identifier }, { username: identifier }],
+				},
+				include: {
+					role: true,
 				},
 			});
 
@@ -47,14 +57,19 @@ export default async function loginRoute(fastify: FastifyInstance) {
 				return reply.status(403).send({ message: 'Conta não verificada. Verifique seu e-mail.' });
 			}
 
+			// 🔑 Verificação da senha
 			const passwordMatch = await bcrypt.compare(password, user.password);
-
 			if (!passwordMatch) {
 				return reply.status(401).send({ message: 'Usuário ou senha inválidos.' });
 			}
 
+			// 🪪 Geração do token JWT
 			const token = jwt.sign(
-				{ sub: user.id, email: user.email, roleId: user.roleId },
+				{
+					sub: user.id,
+					email: user.email,
+					roleId: user.roleId,
+				},
 				process.env.JWT_SECRET!,
 				{ expiresIn: '7d' }
 			);
@@ -66,16 +81,20 @@ export default async function loginRoute(fastify: FastifyInstance) {
 					id: user.id,
 					username: user.username,
 					email: user.email,
-					roleId: user.roleId,
+					role: {
+						id: user.role.id,
+						name: user.role.name,
+					},
+					roleId: user.roleId
+				},
+				roleId: user.roleId,
+				role: {
+					id: user.role.id,
+					name: user.role.name,
 				},
 			};
 
 			return reply.status(200).send(response);
-		} catch (err) {
-			request.log.error(err);
-			return reply.status(500).send({ message: 'Erro interno no servidor.' });
 		}
-	}
-
-	fastify.post('/login', loginHandler);
+	);
 }

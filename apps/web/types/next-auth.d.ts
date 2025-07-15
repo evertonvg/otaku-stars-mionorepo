@@ -1,6 +1,11 @@
 // types/next-auth.d.ts
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import NextAuth from 'next-auth';
+// import NextAuth from 'next-auth';
+import { JWT as DefaultJWT } from 'next-auth/jwt';
+
+type Role = {
+	id: number;
+	name: string;
+};
 
 declare module 'next-auth' {
 	interface Session {
@@ -8,22 +13,24 @@ declare module 'next-auth' {
 			id: string | number;
 			username: string;
 			email: string;
-			roleId: string;
+			role: Role;
 		};
 	}
+
 	interface User {
 		id: string | number;
 		username: string;
 		email: string;
-		roleId: string;
+		role: Role;
+		isVerified: boolean | string
 	}
 }
 
 declare module 'next-auth/jwt' {
-	interface JWT {
+	interface JWT extends DefaultJWT {
 		id: string | number;
 		username: string;
 		email: string;
-		roleId: string;
+		role: Role;
 	}
 }

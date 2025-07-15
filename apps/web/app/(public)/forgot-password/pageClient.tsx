@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -11,11 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import AuthLayout from '../../_components/server/auth-layout';
 
-const forgotPasswordSchema = z.object({
-	email: z.string().email('Email inválido'),
-});
+import { ForgotPasswordForm, forgotPasswordSchema } from '@/schema/forgotPasswordSchema';
 
-type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
+import { forgotPassword } from '@/lib/api/forgotPassword';
 
 export default function ForgotPasswordPageClient() {
 	const form = useForm<ForgotPasswordForm>({
@@ -23,19 +21,12 @@ export default function ForgotPasswordPageClient() {
 		defaultValues: { email: '' },
 	});
 
-	const mutation = useMutation({
-		mutationFn: async (data: ForgotPasswordForm) => {
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data),
-			});
-
-			const result = await res.json();
-			if (!res.ok) throw new Error(result.message || 'Erro ao solicitar recuperação de senha');
-			return result.message;
+	const mutation = useMutation<string, Error, ForgotPasswordForm>({
+		mutationFn: forgotPassword,
+		onSuccess: (msg) => {
+			console.warn(msg)
+			toast.success(msg)
 		},
-		onSuccess: (msg) => toast.success(msg),
 		onError: (err) => toast.error(err.message),
 	});
 

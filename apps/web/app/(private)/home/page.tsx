@@ -17,6 +17,7 @@ export default async function Home() {
 		<div className="flex h-screen w-full flex-col items-center justify-center gap-6">
 			<h1 className="text-4xl font-bold">Bem-vindo, {session.user?.username || 'usuário'}!</h1>
 			{session.user?.email}
+			{session.user?.role.name}
 			<LogoutButton />
 		</div>
 	);

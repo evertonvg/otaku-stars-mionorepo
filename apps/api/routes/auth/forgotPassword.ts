@@ -4,6 +4,7 @@ import prisma from '../../src/lib/prisma';
 import { transporter } from '../../src/utils/mailer';
 import crypto from 'crypto';
 
+
 export default async function forgotPasswordRoute(fastify: FastifyInstance) {
 	fastify.post('/forgot-password', async (request, reply) => {
 		const { email } = request.body as { email: string };
