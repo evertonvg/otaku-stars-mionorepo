@@ -59,7 +59,7 @@ export default async function loginRoute(fastify: FastifyInstance) {
 
 			// 🔑 Verificação da senha
 			const passwordMatch = await bcrypt.compare(password, user.password);
-			if (!passwordMatch) {
+			if (!passwordMatch || password == '') {
 				return reply.status(401).send({ message: 'Usuário ou senha inválidos.' });
 			}
 

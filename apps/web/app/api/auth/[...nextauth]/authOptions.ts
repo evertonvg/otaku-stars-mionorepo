@@ -1,4 +1,3 @@
-// app/api/auth/[...nextauth]/authOptions.ts
 import type { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -49,7 +48,7 @@ export const authOptions: NextAuthOptions = {
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID!,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-		})
+		}),
 	],
 
 	session: {
@@ -63,8 +62,8 @@ export const authOptions: NextAuthOptions = {
 	secret: process.env.NEXTAUTH_SECRET,
 
 	callbacks: {
-		async jwt({ token, user, account, profile }) {
-			// ✅ Login com Google (via OAuth)
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		async signIn({ user, account, profile }) {
 			if (account?.provider === 'google' && profile?.email) {
 				try {
 					const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/google`, {
@@ -72,7 +71,36 @@ export const authOptions: NextAuthOptions = {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({
 							email: profile.email,
-							name: profile.name,
+							username: profile.name,
+							id: profile.sub,
+						}),
+					});
+
+					if (!res.ok) {
+						console.error('Erro ao criar/verificar usuário via Google');
+						return false;
+					}
+
+					return true;
+				} catch (error) {
+					console.error('Erro na verificação/cadastro do Google:', error);
+					return false;
+				}
+			}
+
+			return true; // credenciais
+		},
+
+		async jwt({ token, user, account, profile }) {
+			if (account?.provider === 'google' && profile?.email) {
+				try {
+					const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/google`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							email: profile.email,
+							username: profile.name,
+							id: profile.sub,
 						}),
 					});
 
@@ -94,18 +122,16 @@ export const authOptions: NextAuthOptions = {
 				}
 			}
 
-			// ✅ Login com credenciais
 			if (user) {
 				token.id = user.id;
 				token.username = user.username;
 				token.email = user.email;
 				token.role = user.role;
-				token.isVerified = user.isVerified ?? true; // default: true para login com credenciais
+				token.isVerified = user.isVerified ?? true;
 			}
 
 			return token;
-		}
-		,
+		},
 
 		async session({ session, token }) {
 			if (token) {

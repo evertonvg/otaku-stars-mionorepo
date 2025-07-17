@@ -30,6 +30,8 @@ export default [
 			'array-bracket-spacing': ['error', 'never'],
 			"no-multiple-empty-lines": ["error", { "max": 0, "maxEOF": 0, "maxBOF": 0 }],
 			'space-before-blocks': ['error', 'always'],
+			// "react-hooks/rules-of-hooks": "error",
+			// "react-hooks/exhaustive-deps": "off"
 
 		},
 	},

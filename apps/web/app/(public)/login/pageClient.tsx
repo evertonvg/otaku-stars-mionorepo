@@ -24,13 +24,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
-import {
-	GoogleLogo,
-	FacebookLogo,
-	GithubLogo,
-	InstagramLogo,
-	XLogo,
-} from '@/components/logos/social-logos';
+// import {
+// 	GoogleLogo,
+// 	FacebookLogo,
+// 	GithubLogo,
+// 	InstagramLogo,
+// 	XLogo,
+// } from '@/components/logos/social-logos';
 
 export default function LoginPageClient() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -123,32 +123,48 @@ export default function LoginPageClient() {
 						</form>
 					</Form>
 
-					{/* Botões sociais (ainda não ativos) */}
-					<div className="mt-8 flex justify-center space-x-4 text-muted-foreground">
-						{[GoogleLogo, FacebookLogo, InstagramLogo, XLogo, GithubLogo].map((Icon, idx) => (
-							<button
-								key={idx}
-								disabled
-								className="p-2 rounded-md hover:bg-muted transition-colors cursor-pointer"
-							>
-								<Icon />
-							</button>
-						))}
-					</div>
+					{/* Botões sociais */}
+					{/* <div className="mt-8 flex justify-center space-x-4 text-muted-foreground">
+						{[GoogleLogo, FacebookLogo, InstagramLogo, XLogo, GithubLogo].map((Icon, idx) => {
+							let onClick;
+							let disabled = true;
 
-					{/* Link para cadastro */}
+							switch (Icon.name) {
+								case 'GoogleLogo':
+									onClick = () => signIn('google', { callbackUrl: '/home' });
+									disabled = false;
+									break;
+								// Futuro: ativar outros provedores
+								default:
+									onClick = undefined;
+									disabled = true;
+							}
+
+							return (
+								<button
+									key={idx}
+									onClick={onClick}
+									disabled={disabled}
+									className={`p-2 rounded-md transition-colors cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-muted'
+										}`}
+								>
+									<Icon />
+								</button>
+							);
+						})}
+					</div> */}
+
+					{/* Link para cadastro e recuperação */}
 					<div className="mt-6 text-center">
 						<Link href="/register">
 							<Button variant="link" className="ml-4 cursor-pointer">Não tem conta? Cadastre-se</Button>
 						</Link>
-						<Link href="/forgot-password " >
+						<Link href="/forgot-password">
 							<Button variant="link" className="ml-4 cursor-pointer">Recuperar senha</Button>
 						</Link>
-
 					</div>
 				</div>
 			</AuthLayout.BodyContent>
 		</AuthLayout>
-
 	);
 }

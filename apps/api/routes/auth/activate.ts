@@ -16,12 +16,13 @@ export default async function activateRoute(fastify: FastifyInstance) {
 		});
 
 		if (!user) {
-			return reply.status(400).send({ message: 'Token inválido.' });
+			return reply.status(400).send({ message: 'Conta já ativada. Faça Login para continuar.' });
 		}
 
 		if (!user.tokenExpiresAt || user.tokenExpiresAt < new Date()) {
 			return reply.status(400).send({ message: 'Token expirado. Solicite novo registro.' });
 		}
+
 
 		await prisma.user.update({
 			where: { id: user.id },

@@ -2,8 +2,8 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import bcrypt from 'bcrypt';
 import prisma from '../../src/lib/prisma';
 import { registerSchema } from '../../src/schemas/registerSchema';
-import { transporter } from '../../src/utils/mailer';
 import crypto from 'crypto';
+import { sendActivationEmail } from '../../src/utils/sendActivationEmail';
 
 export default async function registerRoute(fastify: FastifyInstance) {
 	fastify.post('/register', async (request, reply) => {
@@ -50,17 +50,7 @@ export default async function registerRoute(fastify: FastifyInstance) {
 		// 📧 Enviar e-mail de ativação
 		const activationLink = `${process.env.FRONTEND_URL}/activate?token=${activationToken}`;
 
-		await transporter.sendMail({
-			from: `"Minha Plataforma" <${process.env.MAIL_USER}>`,
-			to: email,
-			subject: 'Ative sua conta',
-			html: `
-        <p>Olá, ${username}!</p>
-        <p>Obrigado por se registrar. Clique no link abaixo para ativar sua conta:</p>
-        <a href="${activationLink}">Ativar conta</a>
-        <p>Este link expira em 24 horas.</p>
-      `,
-		});
+		sendActivationEmail(email, username, activationLink)
 
 		return reply.status(201).send({ message: 'Cadastro realizado. Verifique seu e-mail para ativar a conta.' });
 	});
