@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 async function main() {
 	console.log('🔄 Gerando usuários...');
 
-	const defaultRole = await prisma.role.findFirst({ where: { name: 'user' } });
-
+	let defaultRole = await prisma.role.findFirst({ where: { name: 'user' } });
+	if (!defaultRole) defaultRole = { name: 'user', id: 2 };
 	for (let i = 0; i < 40; i++) {
 		const username = faker.internet.userName().toLowerCase();
 		const email = faker.internet.email().toLowerCase();
@@ -20,7 +20,7 @@ async function main() {
 					username,
 					email,
 					password,
-					roleId: defaultRole?.id,
+					roleId: defaultRole.id,
 					isVerified: true,
 				},
 			});

@@ -4,7 +4,11 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
-export default function BackButton() {
+type BackButtonProps = {
+	className?: string;
+};
+
+export default function BackButton({ className }: BackButtonProps) {
 	const pathname = usePathname();
 	const router = useRouter();
 
@@ -15,7 +19,7 @@ export default function BackButton() {
 	if (pathname === '/login' || pathname == '/reset-password') return null;
 
 	return (
-		<Button onClick={handleBack} className='absolute top-4 md:top-12 left-4 cursor-pointer'>
+		<Button onClick={handleBack} className={`cursor-pointer ${className || ''}`} variant="ghost">
 			<ArrowLeft /> Voltar
 		</Button>
 	);

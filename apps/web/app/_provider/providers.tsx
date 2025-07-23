@@ -4,6 +4,7 @@ import React, { ReactNode, useState } from 'react';
 import { Toaster } from 'sonner';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider } from 'next-auth/react';
+import { ThemeProvider } from './theme-provider'; // Importando o ThemeProvider
 import type { Session } from 'next-auth';
 
 interface ProviderProps {
@@ -18,8 +19,10 @@ export function Providers({ children, session }: ProviderProps) {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SessionProvider session={session}>
-				{children}
-				<Toaster richColors position="top-right" />
+				<ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+					{children}
+					<Toaster richColors position="top-right" />
+				</ThemeProvider>
 			</SessionProvider>
 		</QueryClientProvider>
 	);

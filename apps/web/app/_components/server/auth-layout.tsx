@@ -1,5 +1,6 @@
 import { ReactNode, Children, isValidElement } from 'react';
 import BackButton from '../client/back-button';
+import { ThemeSwitch } from '../client/theme-switch';
 
 type bodyProps = {
 	children: ReactNode;
@@ -55,7 +56,8 @@ export default function AuthLayout({ image, children }: authLayoutProps) {
 
 			{/* Lado direito */}
 			<div className="flex flex-1 items-center justify-center pt-20 md:pt-8 p-8 max-w-2xl relative">
-				<BackButton />
+				<BackButton className="absolute top-4 left-4" />
+				<ThemeSwitch className="absolute top-4 right-4" />
 				{bodyContent}
 			</div>
 		</div>
