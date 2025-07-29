@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,11 +18,10 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import AuthLayout from '../../_components/server/auth-layout';
+import AuthLayout from '@/app/_components/server/auth-layout';
 
 import { loginSchema, LoginFormInputs } from '@/schema/loginSchema';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -33,6 +34,8 @@ import { toast } from 'sonner';
 // } from '@/components/logos/social-logos';
 
 export default function LoginPageClient() {
+	const t = useTranslations('login');
+
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
@@ -59,7 +62,7 @@ export default function LoginPageClient() {
 			return;
 		}
 
-		toast.success('Login realizado com sucesso!');
+		toast.success(t('success.loginSuccess'));
 		router.push('/');
 	};
 
@@ -67,10 +70,10 @@ export default function LoginPageClient() {
 		<AuthLayout image="bg.png">
 			<AuthLayout.BodyTitle>
 				<h1 className="text-4xl font-bold mb-4 text-center text-shadow-accent">
-					Bem-vindo de volta ao <br /> OTAKU STARS!
+					{t('title')}
 				</h1>
 				<p className="text-lg opacity-90 text-center text-shadow-accent">
-					Faça login para acessar sua conta e continuar aproveitando nossos serviços.
+					{t('description')}
 				</p>
 			</AuthLayout.BodyTitle>
 			<AuthLayout.BodyContent>
@@ -93,7 +96,7 @@ export default function LoginPageClient() {
 								name="user"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Usuário</FormLabel>
+										<FormLabel>{t('labels.username')}</FormLabel>
 										<FormControl>
 											<Input {...field} type="text" placeholder="username ou e-mail" />
 										</FormControl>
@@ -108,7 +111,7 @@ export default function LoginPageClient() {
 								name="password"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Senha</FormLabel>
+										<FormLabel>{t('labels.password')}</FormLabel>
 										<FormControl>
 											<Input {...field} type="password" placeholder="******" />
 										</FormControl>
@@ -118,7 +121,7 @@ export default function LoginPageClient() {
 							/>
 
 							<Button type="submit" disabled={isLoading} className="w-full cursor-pointer">
-								{isLoading ? 'Entrando...' : 'Entrar'}
+								{isLoading ? t('buttons.logging') : t('buttons.login')}
 							</Button>
 						</form>
 					</Form>
@@ -157,10 +160,10 @@ export default function LoginPageClient() {
 					{/* Link para cadastro e recuperação */}
 					<div className="mt-6 text-center">
 						<Link href="/register">
-							<Button variant="link" className="ml-4 cursor-pointer">Não tem conta? Cadastre-se</Button>
+							<Button variant="link" className="ml-4 cursor-pointer">{t('buttons.register')}</Button>
 						</Link>
 						<Link href="/forgot-password">
-							<Button variant="link" className="ml-4 cursor-pointer">Recuperar senha</Button>
+							<Button variant="link" className="ml-4 cursor-pointer">{t('buttons.forgotPassword')}</Button>
 						</Link>
 					</div>
 				</div>

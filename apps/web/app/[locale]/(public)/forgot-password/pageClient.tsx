@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import AuthLayout from '../../_components/server/auth-layout';
+import AuthLayout from '@/app/_components/server/auth-layout';
 
 import { ForgotPasswordForm, forgotPasswordSchema } from '@/schema/forgotPasswordSchema';
 

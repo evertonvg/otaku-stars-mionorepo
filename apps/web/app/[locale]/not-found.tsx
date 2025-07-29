@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import AuthLayout from './_components/server/auth-layout';
+import AuthLayout from '@/app/_components/server/auth-layout';
 import { AlertTriangle } from 'lucide-react';
-import './globals.css'; // Import global styles
+import '@/app/globals.css';
 
 export default function NotFoundPage() {
 	const router = useRouter();

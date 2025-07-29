@@ -17,7 +17,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import AuthLayout from '../../_components/server/auth-layout';
+import AuthLayout from '@/app/_components/server/auth-layout';
 
 import { Eye, EyeOff } from 'lucide-react';
 import { passwordStrength, generatePassword } from '@/lib/utils';

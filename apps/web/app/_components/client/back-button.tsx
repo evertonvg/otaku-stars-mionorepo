@@ -3,12 +3,15 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 type BackButtonProps = {
 	className?: string;
 };
 
 export default function BackButton({ className }: BackButtonProps) {
+	const t = useTranslations('buttons');
+
 	const pathname = usePathname();
 	const router = useRouter();
 
@@ -20,7 +23,7 @@ export default function BackButton({ className }: BackButtonProps) {
 
 	return (
 		<Button onClick={handleBack} className={`cursor-pointer ${className || ''}`} variant="ghost">
-			<ArrowLeft /> Voltar
+			<ArrowLeft /> {t('back')}
 		</Button>
 	);
 }

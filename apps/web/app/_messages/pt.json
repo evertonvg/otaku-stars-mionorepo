@@ -1,0 +1,43 @@
+{
+	"themes": {
+		"dark": "Escuro",
+		"system": "Sistema",
+		"light": "Claro"
+	},
+	"buttons": {
+		"back": "Voltar"
+	},
+	"auth": {
+		"errors": {
+			"invalid_credentials": "Usuário ou senha inválidos",
+			"unverified_account": "Conta não verificada. Verifique seu e-mail."
+		}
+	},
+	"errors": {
+		"server": {
+			"internal_error": "Erro interno do servidor"
+		}
+	},
+	"login": {
+		"title": "Bem-vindo ao OTAKU STARS!",
+		"description": "Faça login para acessar sua conta e continuar aproveitando nossos serviços.",
+		"labels": {
+			"username": "Usuário",
+			"password": "Senha"
+		},
+		"buttons": {
+			"login": "Entrar",
+			"logging": "Entrando",
+			"forgotPassword": "Recuperar senha",
+			"register": "Não tem conta? Cadastre-se"
+		},
+		"validations": {
+			"required": "O usuário deve ter pelo menos 5 caracteres.",
+			"password": "A senha deve ter pelo menos 6 caracteres."
+		},
+		"success": {
+			"loginSuccess": "Login realizado com sucesso!",
+			"logoutSuccess": "Logout realizado com sucesso!"
+		}
+	}
+}
