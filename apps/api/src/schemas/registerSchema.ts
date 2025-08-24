@@ -1,17 +1,18 @@
-// src/schemas/registerSchema.ts
-import { z } from 'zod';
-
-export const registerSchema = z.object({
-	username: z
-		.string()
-		.min(3, { message: 'O nome de usuário deve ter pelo menos 3 caracteres' }),
-	email: z
-		.string()
-		.email({ message: 'Formato de e-mail inválido' }),
-	password: z
-		.string()
-		.min(6, { message: 'A senha deve ter pelo menos 6 caracteres' }),
-});
+import { z } from "zod";
+import { Locale, t } from "../locales";
 
 
-export type RegisterInput = z.infer<typeof registerSchema>;
+export const registerSchema = (lang: Locale) =>
+	z.object({
+		username: z
+			.string()
+			.min(3, { message: t(lang, "USERNAME_MIN_LENGTH") }),
+		email: z
+			.string()
+			.email({ message: t(lang, "INVALID_EMAIL") }),
+		password: z
+			.string()
+			.min(6, { message: t(lang, "PASSWORD_MIN_LENGTH") }),
+	});
+
+export type RegisterInput = z.infer<ReturnType<typeof registerSchema>>;

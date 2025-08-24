@@ -30,7 +30,10 @@ model User {
     coverPositionY Float? // posição vertical da capa
     coverScale     Float? // escala do zoom da capa
     phone          String? @db.VarChar(20)
-    isVerified     Boolean @default(false)
+
+    isVerified Boolean @default(false)
+    isBanned   Boolean @default(false)
+    isActive   Boolean @default(true)
 
     passwordResetToken   String?   @unique
     passwordResetExpires DateTime?

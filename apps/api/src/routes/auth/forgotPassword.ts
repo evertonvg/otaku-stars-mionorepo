@@ -1,17 +1,24 @@
 // routes/auth/forgotPassword.ts
 import { FastifyInstance } from 'fastify';
-import prisma from '../../src/lib/prisma';
-import { transporter } from '../../src/utils/mailer';
 import crypto from 'crypto';
+import prisma from '../../lib/prisma';
+import { sendForgotPassword } from '../../utils/sendForgotPassword';
+import { Locale, t } from '../../locales';
 
 
 export default async function forgotPasswordRoute(fastify: FastifyInstance) {
 	fastify.post('/forgot-password', async (request, reply) => {
+		const lang = (request.headers["accept-language"] as Locale) || "pt";
+
 		const { email } = request.body as { email: string };
 
 		const user = await prisma.user.findUnique({ where: { email } });
 		if (!user) {
-			return reply.status(200).send(); // Enviar mesmo se não existir (boa prática)
+			return reply.status(200).send({
+				message: t(lang, 'IF_EMAIL_REGISTERED_LINK_SENT'),
+				code: 'IF_EMAIL_REGISTERED_LINK_SENT',
+				status: 200
+			}); // Enviar mesmo se não existir (boa prática)
 		}
 
 		const resetToken = crypto.randomBytes(32).toString('hex');
@@ -27,13 +34,12 @@ export default async function forgotPasswordRoute(fastify: FastifyInstance) {
 
 		const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-		await transporter.sendMail({
-			to: email,
-			from: `"Otaku Stars" <${process.env.MAIL_USER}>`,
-			subject: 'Redefina sua senha',
-			html: `<p>Clique para redefinir: <a href="${resetUrl}">${resetUrl}</a></p>`,
-		});
+		sendForgotPassword(resetUrl, email, lang);
 
-		return reply.status(200).send();
+		return reply.status(200).send({
+			message: t(lang, 'IF_EMAIL_REGISTERED_LINK_SENT'),
+			code: 'IF_EMAIL_REGISTERED_LINK_SENT',
+			status: 200
+		});
 	});
 }

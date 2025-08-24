@@ -1,12 +1,14 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { Locale, t } from "../locales";
 
-export const loginSchema = z.object({
-	identifier: z
-		.string()
-		.min(3, 'Email ou usuário é obrigatório'),
-	password: z
-		.string()
-		.min(6, 'Senha deve ter pelo menos 6 caracteres'),
-});
+export const loginSchema = (lang: Locale) =>
+	z.object({
+		identifier: z
+			.string()
+			.min(3, { message: t(lang, "IDENTIFIER_REQUIRED") }),
+		password: z
+			.string()
+			.min(6, { message: t(lang, "PASSWORD_TOO_SHORT") }),
+	});
 
-export type LoginSchema = z.infer<typeof loginSchema>;
+export type LoginInput = z.infer<ReturnType<typeof loginSchema>>;
