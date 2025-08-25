@@ -1,13 +1,23 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import prisma from '../../lib/prisma';
+import { Locale, t } from '../../locales';
 
 export default async function activateRoute(fastify: FastifyInstance) {
 	fastify.post('/activate', async (request: FastifyRequest, reply: FastifyReply) => {
-		const { token } = request.body as { token?: string };
+		const lang = (request.headers["accept-language"] as Locale) || "pt";
+
+		const token = (request.query as { token?: string })?.token
+			|| (request.body as { token?: string })?.token;
+
 
 		// 🔹 Token não fornecido
 		if (!token) {
-			return reply.status(400).send({ code: 'TOKEN_NOT_PROVIDED' });
+			return reply.status(400).send({
+				token,
+				status: 400,
+				message: t(lang, 'TOKEN_NOT_PROVIDED'),
+				code: 'TOKEN_NOT_PROVIDED'
+			});
 		}
 
 		// 🔹 Busca usuário pelo token
@@ -15,7 +25,12 @@ export default async function activateRoute(fastify: FastifyInstance) {
 
 		// 🔹 Usuário não encontrado ou já ativado
 		if (!user) {
-			return reply.status(400).send({ code: 'USER_ALREADY_VERIFIED' });
+			return reply.status(400).send({
+				token,
+				status: 400,
+				message: t(lang, 'USER_ALREADY_VERIFIED'),
+				code: 'USER_ALREADY_VERIFIED'
+			});
 		}
 
 		// 🔹 Token expirado
@@ -34,6 +49,10 @@ export default async function activateRoute(fastify: FastifyInstance) {
 		});
 
 		// 🔹 Retorna sucesso
-		return reply.status(200).send({ code: 'ACTIVATION_SUCCESS' });
+		return reply.status(200).send({
+			status: 200,
+			message: t(lang, 'ACTIVATION_SUCCESS'),
+			code: 'ACTIVATION_SUCCESS'
+		});
 	});
 }

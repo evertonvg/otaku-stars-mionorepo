@@ -1,8 +1,9 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
-import { generateUsername } from '../../../src/utils/generateusername'
-import { sendActivationEmail } from '../../../src/utils/sendActivationEmail';
+import { generateUsername } from '../../../utils/generateusername';
+import { sendActivationEmail } from '../../../utils/sendActivationEmail';
+
 
 type GoogleOAuthRequestBody = {
 	id: string;

@@ -12,6 +12,12 @@ export default {
 	IF_EMAIL_REGISTERED_LINK_SENT: 'Si el correo electrónico está registrado, se enviará el enlace.',
 	ACTIVATED_EMAIL_ADVISE: 'La cuenta ya está activada.',
 	ACTIVATION_EMAIL_SUBJECT: "Activa tu cuenta",
+	TOKEN_NOT_PROVIDED: "Token no proporcionado.",
+	INVALID_TOKEN: "Token inválido.",
+	TOKEN_EXPIRED: "El token ha expirado.",
+	USER_NOT_FOUND: "Usuario no encontrado.",
+	ACTIVATION_SUCCESS: "Activación exitosa.",
+	USER_ALREADY_VERIFIED: "Usuario ya verificado.",
 
 	// loginSchema
 	USERNAME_TOO_SHORT: "El nombre de usuario debe tener al menos 3 caracteres",

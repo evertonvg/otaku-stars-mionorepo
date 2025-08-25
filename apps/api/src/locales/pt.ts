@@ -12,6 +12,13 @@ export default {
 	IF_EMAIL_REGISTERED_LINK_SENT: 'Se o e-mail estiver cadastrado, o link será enviado.',
 	ACTIVATED_EMAIL_ADVISE: 'Conta já está ativada.',
 	ACTIVATION_EMAIL_SUBJECT: "Ative sua conta",
+	TOKEN_NOT_PROVIDED: "Token não fornecido.",
+	INVALID_TOKEN: "Token inválido.",
+	TOKEN_EXPIRED: "Token expirado.",
+	USER_NOT_FOUND: "Usuário não encontrado.",
+	ACTIVATION_SUCCESS: "Ativação realizada com sucesso.",
+	USER_ALREADY_VERIFIED: "Usuário já verificado.",
+
 
 
 	// loginSchema
